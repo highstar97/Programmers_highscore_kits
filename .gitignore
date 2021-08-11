@@ -1,3 +1,6 @@
+# vscode 컴파일 전용 파일 제외
+*.json
+
 # Prerequisites
 *.d
 
