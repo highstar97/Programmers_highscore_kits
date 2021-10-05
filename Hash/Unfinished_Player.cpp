@@ -1,24 +1,14 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <unordered_map>
+#include <set>
 
 std::string solution(std::vector<std::string> participant, std::vector<std::string> completion) {
-    std::string answer = "";
-    std::unordered_map<std::string,int> player;
-    for(auto data : participant){
-        player[data]++;
-    }
-    for(auto data : completion){
-        player[data]--;
-    }
-    for(auto data : player){
-        if(data.second == 1){
-            answer = data.first;
-            return answer;
-        }
-    }
-    return answer;
+    std::multiset<std::string> MultiSet;
+    for(auto data : participant)
+        MultiSet.emplace(data);
+    for(auto data : completion)
+        MultiSet.erase(MultiSet.find(data));
+    return *MultiSet.begin();
 }
 
 int main(){
