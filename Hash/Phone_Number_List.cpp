@@ -1,15 +1,12 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <algorithm>
-using namespace std;
 
-bool solution(vector<string> phoneBook) {
-    sort(phoneBook.begin(), phoneBook.end());
-    for ( int i = 0 ; i < phoneBook.size() - 1 ; i++ ){
-        if ( phoneBook[i] == phoneBook[i+1].substr(0, phoneBook[i].size()) ){
+bool solution(std::vector<std::string> phone_book) {
+    std::sort(phone_book.begin(), phone_book.end());
+    for(int i=0; i<phone_book.size()-1; i++){
+        if(phone_book[i] == phone_book[i+1].substr(0,phone_book[i].length()))
             return false;
-        }
     }
     return true;
 }
