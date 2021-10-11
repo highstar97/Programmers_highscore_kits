@@ -1,51 +1,46 @@
-#include <string>
+#include <iostream>
 #include <vector>
 #include <queue>
-#include <iostream>
 
-using namespace std;
+int solution(int bridge_length, int weight, std::vector<int> truck_weights) {
+    int time = 0;
+    int on_bridge_weight = 0;
+    std::queue<int> wait;
+    std::queue<std::pair<int,int>> on_bridge;
 
-int solution(int bridge_length, int weight, vector<int> truck_weights) {
-    int num_of_truck = truck_weights.size();
-    int i = 1;          // i = °æ°ú ½Ã°£
-    int up = 0;         // up = ´Ù¸®¿¡ ¿Ã¶ó°£ Æ®·°ÀÇ ¼ö
-    int down = 0;       // down = ´Ù¸®¿¡¼­ ³»·Á¿Â Æ®·°ÀÇ ¼ö
-    int onbridge = 0;   // onbridge = ´Ù¸®¿¡ ¿Ã¶ó°£ Æ®·°ÀÇ ¹«°ÔÀÇ ÇÕ
-    queue<int> ing;
-    vector<int> time(num_of_truck,0);   // time[num_of_truck]ÀÌ ¿øÇÏ´Â °ª
-
-    // ´Ù¸®¿¡ Æ®·°À» ´Ù ¿Ã¸± ¶§ ±îÁö (timd[num_of_truck]°ª¸¸ ¾Ë¸é µÇ¹Ç·Î)
-    while(up != num_of_truck){
-        // Æ®·°ÀÌ ³»¸± ½Ã°£ÀÌ¸é ´Ù¸® À§ Æ®·° ¹«°Ô¸¦ ³·Ãß°í Æ®·°À» ³»¸°´Ù.
-        if (i == time[down])
+    for(auto data : truck_weights)
+        wait.emplace(data);
+    
+    while(!wait.empty())
+    {
+        if(on_bridge_weight + wait.front() <= weight)
         {
-            onbridge -= ing.front();
-            ing.pop();
-            down++;    // ´ÙÀ½ Æ®·°ÀÇ ³»¸± ½Ã°£À» ±â´Ù¸°´Ù.
+            on_bridge.emplace(std::make_pair(wait.front(),time));
+            on_bridge_weight += wait.front();
+            wait.pop();
+            time++;
         }
-        
-        // ´Ù¸® À§ Æ®·° ¹«°Ô + ¿Ã¶ó°¥ Æ®·° ¹«°Ô <= ÇÑµµ ¹«°Ô
-        if (onbridge + truck_weights[up] <= weight)
+        else
         {
-            // Æ®·°À» ´Ù¸®¿¡ ¿Ã¸°´Ù.
-            onbridge += truck_weights[up];
-            ing.push(truck_weights[up]);
-
-            // Æ®·°ÀÌ ´Ù¸®¿¡¼­ ³»¸± ½Ã°£À» Ã¼Å©
-            time[up] = i + bridge_length;
-            
-            up++;
+            // ì‹œê°„ì€ ì¤„ì–´ë“¤ ìˆ˜ ì—†ë‹¤.
+            time = std::max(time,on_bridge.front().second + bridge_length);
+            on_bridge_weight -= on_bridge.front().first;
+            on_bridge.pop();
         }
-        
-        i++;
     }
-
-    return time[num_of_truck-1];
+    while(!on_bridge.empty())
+    {
+        time = on_bridge.front().second + bridge_length;
+        on_bridge.pop();
+    }
+    return time+1;
 }
 
 int main(){
     int bridge_length = 2;
     int weight = 10;
     std::vector<int> truck_weights = {7,4,5,6};
-    std::cout << solution(bridge_length,weight,truck_weights);
+    //std::cout << solution(bridge_length, weight, truck_weights);
+    //std::cout << std::endl << solution(100,100,{10, 10, 10, 10, 10, 10, 10, 10, 10, 10});
+    std::cout << std::endl << solution(5,5,{2,2,2,2,1,1,1,1,1});
 }
