@@ -1,25 +1,32 @@
-#include <string>
-#include <vector>
 #include <iostream>
+#include <vector>
+#include <stack>
 
-using namespace std;
-
-vector<int> solution(vector<int> prices) {
-    vector<int> answer;
-    const int SIZE = prices.size();
-    for(int i=0; i<SIZE-1; i++){
-        for(int j=i+1; j<SIZE; j++){
-            if(prices[i] > prices[j] || j == SIZE-1){
-                answer.push_back(j-i);
-            }
+std::vector<int> solution(std::vector<int> prices)
+{
+    int size = prices.size();
+    std::vector<int> answer(prices.size());
+    std::stack<int> s;
+    for(int i=0; i<size; i++)
+    {
+        while(!s.empty() && prices[s.top()] > prices[i])
+        {
+            answer[s.top()] = i-s.top();
+            s.pop();
         }
+        s.emplace(i);
     }
-    answer.push_back(0);
+    while(!s.empty())
+    {
+        answer[s.top()] = size - s.top() - 1;
+        s.pop();
+    }
     return answer;
 }
 
-int main(){
-    vector<int> prices = {3,5,4,2,6,7,1,2,4};
+int main()
+{
+    std::vector<int> prices = {3,5,4,2,6,7,1,2,4};
     for(int data : solution(prices))
-        cout << data << " ";
+        std::cout << data << " ";
 }
