@@ -1,26 +1,23 @@
 #include <iostream>
-#include <string>
 #include <vector>
 #include <algorithm>
 
-using namespace std;
-
-int solution(vector<int> citations) {
-    int answer = 0;
-    sort(citations.begin(), citations.end());
-    for(int i=0; i<citations.size(); i++){
-        int count = 0;
-        for(int j=0; j<citations.size(); j++){
-            if(i<= citations[j])
-                count++;
+int solution(std::vector<int> citations)
+{
+    int size = citations.size();
+    sort(citations.begin(),citations.end());
+    for(int i=size-1; i>=0; i--)
+    {
+        if(citations[i] < size-i)
+        {
+            return size-i-1;
         }
-        if(count >= i)
-            answer = i;
-    }
-    return answer;
+    }    
 }
 
-int main(){
-    vector<int> citations = {0,1,2,3,3,3};
-    cout << solution(citations);
+int main()
+{
+    std::vector<int> citations = {0,1,2,3,3,3};
+    std::cout << solution(citations) << std::endl;
+    std::cout << solution({0,2,4,5,6});
 }
