@@ -1,15 +1,19 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include <algorithm>
 
-std::vector<int> solution(std::vector<int> array, std::vector<std::vector<int>> commands)
-{
-    std::vector<int> answer;
-    for(auto data : commands)
+using namespace std;
+
+vector<int> solution(vector<int> array, vector<vector<int>> commands) {
+    vector<int> answer;
+    vector<int> temp;
+    
+    for(int i=0; i<commands.size(); ++i)
     {
-        std::vector<int> temp(array.begin()+data[0]-1,array.begin()+data[1]);
-        sort(temp.begin(),temp.end());
-        answer.emplace_back(temp[data[2]-1]);
+        temp = array;
+        sort(temp.begin()+commands[i][0] - 1, temp.begin()+commands[i][1]);
+        answer.emplace_back(temp[commands[i][0] + commands[i][2] - 2]);
     }
     return answer;
 }
