@@ -1,29 +1,41 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include <algorithm>
 
-std::string solution(std::vector<int> numbers)
+using namespace std;
+
+string solution(vector<int> numbers)
 {
-    std::string answer;
-    std::vector<std::string> v;
-    for(auto data : numbers)
-        v.emplace_back(std::to_string(data));
-    sort(v.begin(),v.end(),[](std::string a ,std::string b){
-        for(int i=0; i<4; i++)
-        {
-            a += a; b += b;
-        }
-        a = a.substr(0,4);  b = b.substr(0,4);
-        return a > b;
-    });
-    std::string iszero;
-    for(auto data : v)
+    bool IsAllZero = true;
+    string Answer = "";
+    vector<string> Strings;
+    
+    for(int number : numbers)
     {
-        answer += data;
-        iszero += "0";
+        if(IsAllZero && number != 0)
+        {
+            IsAllZero = false;
+        }
+        Strings.emplace_back(to_string(number));
     }
-    if(answer == iszero)    return "0";
-    else    return answer;
+    
+    if(IsAllZero)
+    {
+        return "0";
+    }
+    
+    sort(Strings.begin(), Strings.end(), [](const string& b, const string& f) -> bool
+         {
+             return f+b < b+f;
+         });
+    
+    for(string String : Strings)
+    {
+        Answer += String;
+    }
+    
+    return Answer;
 }
 
 int main()
