@@ -2,50 +2,63 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <algorithm>
 
 using namespace std;
 
-int BFS(string begin, string target, vector<string> words){
-    bool visited[50] = {false};
-    queue<string> q;
-    q.emplace(begin);   // q : ¹®ÀÚ
-    q.emplace("0");     // q : ¹®ÀÚ + ¼ıÀÚ
-    while(!q.empty()){
-        string current_word = q.front();
-        q.pop();        // q : ¼ıÀÚ
-        if(current_word == target){
-            return stoi(q.front());
+int NumOfDiff(string CurrentWord, string NextWord)
+{
+    int count = 0;
+    int length = CurrentWord.length();
+    for (int i = 0; i < length; ++i)
+    {
+        if (CurrentWord[i] != NextWord[i])
+        {
+            ++count;
         }
-        for(int i=0; i<words.size(); i++){
-            int dif = 0;
-            // ±ÛÀÚ¼ö°¡ ¸î °³ ´Ù¸¥Áö Ã¼Å©
-            for(int j=0; j<current_word.size(); j++){
-                if(words[i][j] != current_word[j])
-                    dif++;
-            }
-            // ±ÛÀÚ¼ö Â÷ÀÌ°¡ 1 && ¹æ¹®ÇÏÁö ¾ÊÀº ´Ü¾îÀÏ °æ¿ì q¿¡ ³ÖÀ½
-            if(dif == 1 && visited[i] == false){
-                q.emplace(words[i]);        // q : ¼ıÀÚ + ¹®ÀÚ
-                visited[i] = true;
-                int num = stoi(q.front());
-                num++;
-                q.emplace(to_string(num));  // q : ¼ıÀÚ + ¹®ÀÚ + (¼ıÀÚ+1)
-            }
-        }
-        q.pop();                            // q : ¹®ÀÚ + (¼ıÀÚ+1) + ¹®ÀÚ + (¼ıÀÚ+1) + ....
-    } 
+    }
+    return count;
 }
 
-int solution(string begin, string target, vector<string> words){
-    // words¾È¿¡ targetÀÌ ÀÖÀ¸¸é BFS ½ÇÇà
-    for(string data : words)
-        if(data == target)
-            return BFS(begin, target, words);
-    // targetÀÌ ¾øÀ¸¸é 
+int solution(string begin, string target, vector<string> words)
+{
+    // targetì´ ì¡´ì¬í•˜ì§€ wordsì— ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°
+    if (find(words.begin(), words.end(), target) == words.end())
+    {
+        return 0;
+    }
+
+    vector<bool> IsVisited(words.size(), false);
+    queue<pair<string, int>> WordQueue; // {Word, NumOfChanges}
+    WordQueue.emplace(make_pair(begin, 0));
+
+    while (!WordQueue.empty())
+    {
+        string CurrentWord = WordQueue.front().first;
+        int NumOfChanges = WordQueue.front().second;
+        WordQueue.pop();
+
+        if (CurrentWord == target)
+        {
+            return NumOfChanges;
+        }
+
+        for (int i = 0; i < words.size(); ++i)
+        {
+            if (IsVisited[i] == true || NumOfDiff(CurrentWord, words[i]) != 1)
+            {
+                continue;
+            }
+
+            IsVisited[i] = true;
+            WordQueue.emplace(make_pair(words[i], NumOfChanges + 1));
+        }
+    }
     return 0;
 }
 
-int main(){
+int main()
+{
     string begin = "hit";
     string target = "hte";
     vector<string> words = {"hot", "hie", "hte", "bot", "bog", "lot", "aog", "cog"};
