@@ -2,25 +2,26 @@
 #include <vector>
 #include <unordered_map>
 
-int solution(std::vector<std::vector<std::string>> clothes)
+using namespace std;
+
+int solution(vector<vector<string>> clothes)
 {
     int answer = 1;
-    std::unordered_map<std::string,int> UMap;
-    for(auto data : clothes)
+    unordered_map<string, int> HashMap;
+    for (int i = 0; i < clothes.size(); ++i)
     {
-        if(UMap.find(data[1]) == UMap.end())
-            UMap[data[1]] = 1;
-        else
-            UMap[data[1]]++;
+        ++HashMap[clothes[i][1]];
     }
 
-    for(auto data : UMap)
-        answer *= data.second + 1;
-    
-    return answer-1;
+    for (auto data : HashMap)
+    {
+        answer *= (data.second + 1);
+    }
+    return answer - 1;
 }
 
-int main(){
-    std::vector<std::vector<std::string>> clothes = {{"yellowhat", "headgear"}, {"bluesunglasses", "eyewear"}, {"green_turban", "headgear"}};
-    std::cout << solution(clothes);
+int main()
+{
+    vector<vector<string>> clothes = {{"yellowhat", "headgear"}, {"bluesunglasses", "eyewear"}, {"green_turban", "headgear"}};
+    cout << solution(clothes);
 }
