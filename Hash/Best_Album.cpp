@@ -3,54 +3,49 @@
 #include <unordered_map>
 #include <algorithm>
 
-#define si std::pair<std::string, int>
+using namespace std;
 
-std::vector<int> solution(std::vector<std::string> genres, std::vector<int> plays)
+vector<int> solution(vector<string> genres, vector<int> plays)
 {
-    std::vector<int> answer;
-    std::unordered_map<std::string, int> Genre_TotalPlays;
-    std::unordered_map<std::string, std::vector<int>> Genre_Plays;
-    for(int i=0; i<genres.size(); i++)
-    {
-        if(Genre_TotalPlays.find(genres[i]) == Genre_TotalPlays.end())
-            Genre_TotalPlays[genres[i]] = plays[i];
-        else
-            Genre_TotalPlays[genres[i]] += plays[i];
-        Genre_Plays[genres[i]].emplace_back(plays[i]);
-    }
-    
-    std::vector<si> v1(Genre_TotalPlays.begin(), Genre_TotalPlays.end());
-    sort(v1.begin(),v1.end(),[](si& a, si& b){
-        return a.second > b.second;
-    });
+    vector<int> Answer;
+    unordered_map<string, int> SumOfPlays;
+    unordered_map<string, vector<pair<int, int>>> IndexAndPlaysOfGenres; // {genre, {{150,0},{150,2},{800,3}}}
 
-    for(auto& data : Genre_Plays)
+    for (int i = 0; i < genres.size(); ++i)
     {
-        sort(data.second.begin(), data.second.end(), [](int &a, int &b)->bool{
-            return a > b;
-        });
+        SumOfPlays[genres[i]] += plays[i];
+        IndexAndPlaysOfGenres[genres[i]].emplace_back(make_pair(i, plays[i]));
     }
 
-    for(auto data : v1){
+    vector<pair<string, int>> SumOfPlaysVector(SumOfPlays.begin(), SumOfPlays.end());
+    sort(SumOfPlaysVector.begin(), SumOfPlaysVector.end(), [](const pair<string, int> &b, const pair<string, int> &f) -> bool
+         { return f.second < b.second; });
+
+    for (auto data : SumOfPlaysVector)
+    {
+        vector<pair<int, int>> IndexAndPlaysVector = IndexAndPlaysOfGenres[data.first];
+        sort(IndexAndPlaysVector.begin(), IndexAndPlaysVector.end(), [](const pair<int, int> &b, const pair<int, int> &f) -> bool
+             { return f.second < b.second; });
         int count = 0;
-        int max = (Genre_Plays[data.first].size() >= 2) ? 2 : 1;
-        do{
-            for(int i=0; i<genres.size(); i++){
-                if(genres[i] == data.first && plays[i] == Genre_Plays[data.first][count]){
-                    answer.emplace_back(i);
-                    plays[i] = 0;
-                }
+        for (auto IndexAndPlays : IndexAndPlaysVector)
+        {
+            if (count >= 2)
+            {
+                break;
             }
-            count++;
-        }while(count < max);
+            Answer.emplace_back(IndexAndPlays.first);
+            ++count;
+        }
     }
-
-    return answer;
+    return Answer;
 }
 
-int main(){
-    std::vector<std::string> genres = {"classic", "pop", "classic", "classic","jazz","pop", "Rock", "jazz"};
-    std::vector<int> plays = {150, 600, 150, 800, 1100, 2500, 1000, 1000};
-    for(auto data : solution(genres,plays))
-        std::cout << data << " ";
+int main()
+{
+    vector<string> genres = {"classic", "pop", "classic", "classic", "jazz", "pop", "Rock", "jazz"};
+    vector<int> plays = {150, 600, 150, 800, 1100, 2500, 1000, 1000};
+    for (auto data : solution(genres, plays))
+    {
+        cout << data << " ";
+    }
 }
