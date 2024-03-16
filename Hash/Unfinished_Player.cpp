@@ -1,18 +1,43 @@
 #include <iostream>
+#include <chrono>
 #include <vector>
-#include <set>
+#include <unordered_map>
 
-std::string solution(std::vector<std::string> participant, std::vector<std::string> completion) {
-    std::multiset<std::string> MultiSet;
-    for(auto data : participant)
-        MultiSet.emplace(data);
-    for(auto data : completion)
-        MultiSet.erase(MultiSet.find(data));
-    return *MultiSet.begin();
+using namespace std;
+using namespace chrono;
+
+string solution(vector<string> participant, vector<string> completion)
+{
+    string answer;
+    unordered_map<string, int> Hash;
+    for (auto person : participant)
+    {
+        ++Hash[person];
+    }
+    for (auto person : completion)
+    {
+        --Hash[person];
+    }
+    for (auto data : Hash)
+    {
+        if (data.second == 1)
+        {
+            answer = data.first;
+            break;
+        }
+    }
+    return answer;
 }
 
-int main(){
-    std::vector<std::string> participant = {"mislav", "stanko", "mislav", "ana"};
-    std::vector<std::string> completion = {"stanko", "ana", "mislav"};
-    std::cout << solution(participant,completion);
+int main()
+{
+    vector<string> participant = {"mislav", "stanko", "mislav", "ana"};
+    vector<string> completion = {"stanko", "ana", "mislav"};
+    
+    system_clock::time_point start, finish;
+    nanoseconds duration_set, duration_hash;
+    start = system_clock::now();
+    cout << solution(participant, completion) << "\n";
+    finish = system_clock::now();
+    cout << (finish - start).count() << " nanoseconds" << endl;
 }
