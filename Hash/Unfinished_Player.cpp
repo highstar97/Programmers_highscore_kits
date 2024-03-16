@@ -35,7 +35,6 @@ int main()
     vector<string> completion = {"stanko", "ana", "mislav"};
     
     system_clock::time_point start, finish;
-    nanoseconds duration_set, duration_hash;
     start = system_clock::now();
     cout << solution(participant, completion) << "\n";
     finish = system_clock::now();
