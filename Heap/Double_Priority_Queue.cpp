@@ -1,24 +1,42 @@
 #include <iostream>
-#include <set>
+#include <string>
 #include <vector>
+#include <set>
 
-std::vector<int> solution(std::vector<std::string> operations)
+using namespace std;
+
+vector<int> solution(vector<string> operations)
 {
-    std::vector<int> answer;
-    std::multiset<int> s;
-    for(auto data : operations) {
-        if(data[0] == 'I') s.emplace(stoi(data.substr(2))); 
-        else if(data[2] == '1' && !s.empty()) { s.erase(--s.end()); }
-        else if(!s.empty()) { s.erase(s.begin()); }
+    multiset<int> Set;
+    for (string operation : operations)
+    {
+        if (operation[0] == 'I')
+        {
+            Set.emplace(stoi(operation.substr(2)));
+        }
+        else if (operation[2] == '1' && !Set.empty())
+        {
+            Set.erase(--Set.end());
+        }
+        else if (!Set.empty())
+        {
+            Set.erase(Set.begin());
+        }
     }
-    if(s.empty()) { return {0,0}; }
-    answer.emplace_back(*(--s.end())); 
-    answer.emplace_back(*s.begin());
-    return answer;
+
+    if (Set.empty())
+    {
+        return {0, 0};
+    }
+    else
+    {
+        return {*(--Set.end()), *Set.begin()};
+    }
 }
 
-int main(){
-    std::vector<std::string> operations = {"I 16", "I -5643", "D -1", "D 1", "D 1", "I 123", "D -1"};
-    for(int data : solution(operations))
-        std::cout << data << ' ';
+int main()
+{
+    vector<string> operations = {"I 16", "I -5643", "D -1", "D 1", "D 1", "I 123", "D -1"};
+    for (int data : solution(operations))
+        cout << data << ' ';
 }
