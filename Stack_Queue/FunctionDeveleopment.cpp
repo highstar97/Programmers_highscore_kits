@@ -1,36 +1,39 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <math.h>
+#include <queue>
 
-std::vector<int> solution(std::vector<int> progresses, std::vector<int> speeds) {
-    int count = 1;
-    std::vector<int> answer;
-    std::vector<int> during_time(progresses.size(),0);
-    for(int i=0; i<during_time.size(); i++)
+using namespace std;
+
+vector<int> solution(vector<int> progresses, vector<int> speeds)
+{
+    int Day = 0;
+    vector<int> Answer;
+    queue<int> Queue;
+
+    for (int i = 0; i < progresses.size(); ++i)
     {
-        during_time[i] = ceil((static_cast<double>(100 - progresses[i]))/speeds[i]);
+        int rest = 100 - progresses[i];
+        rest % speeds[i] > 0 ? Queue.emplace(rest / speeds[i] + 1) : Queue.emplace(rest / speeds[i]);
     }
 
-    for(int i=1; i<during_time.size(); i++)
+    while (!Queue.empty())
     {
-        if(during_time[i-1] < during_time[i])
+        int Count = 0;
+        Day = Queue.front();
+        while (!Queue.empty() && Queue.front() <= Day)
         {
-            answer.emplace_back(count);
-            count = 1;
+            ++Count;
+            Queue.pop();
         }
-        else
-        {
-            during_time[i] = during_time[i-1];
-            count++;
-        }
+        Answer.emplace_back(Count);
     }
-    answer.emplace_back(count);
-    return answer;
+
+    return Answer;
 }
 
 int main()
 {
-    for(auto data : solution({0, 90, 99, 99, 80, 99},{1, 1, 1, 1, 1, 1}))
-        std::cout << data << " ";
+    for (auto data : solution({0, 90, 99, 99, 80, 99}, {1, 1, 1, 1, 1, 1}))
+        cout << data << " ";
 }
