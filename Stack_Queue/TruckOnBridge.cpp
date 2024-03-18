@@ -1,46 +1,45 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <algorithm>
 
-int solution(int bridge_length, int weight, std::vector<int> truck_weights) {
-    int time = 0;
-    int on_bridge_weight = 0;
-    std::queue<int> wait;
-    std::queue<std::pair<int,int>> on_bridge;
+using namespace std;
 
-    for(auto data : truck_weights)
-        wait.emplace(data);
-    
-    while(!wait.empty())
+int solution(int bridge_length, int weight, vector<int> truck_weights)
+{
+    int Time = 0, Index = 0, WeightOnBridge = 0;
+    queue<pair<int, int>> OnBridge; // {Weight, Time}
+
+    while (Index < truck_weights.size())
     {
-        if(on_bridge_weight + wait.front() <= weight)
+        if (WeightOnBridge + truck_weights[Index] <= weight)
         {
-            on_bridge.emplace(std::make_pair(wait.front(),time));
-            on_bridge_weight += wait.front();
-            wait.pop();
-            time++;
+            OnBridge.emplace(make_pair(truck_weights[Index], Time));
+            WeightOnBridge += truck_weights[Index++];
+            ++Time;
         }
         else
         {
-            // 시간은 줄어들 수 없다.
-            time = std::max(time,on_bridge.front().second + bridge_length);
-            on_bridge_weight -= on_bridge.front().first;
-            on_bridge.pop();
+            Time = max(Time, OnBridge.front().second + bridge_length);  // ***
+            WeightOnBridge -= OnBridge.front().first;
+            OnBridge.pop();
         }
     }
-    while(!on_bridge.empty())
+
+    while (!OnBridge.empty())
     {
-        time = on_bridge.front().second + bridge_length;
-        on_bridge.pop();
+        Time = OnBridge.front().second + bridge_length;
+        OnBridge.pop();
     }
-    return time+1;
+    return ++Time;
 }
 
-int main(){
+int main()
+{
     int bridge_length = 2;
     int weight = 10;
-    std::vector<int> truck_weights = {7,4,5,6};
-    //std::cout << solution(bridge_length, weight, truck_weights);
-    //std::cout << std::endl << solution(100,100,{10, 10, 10, 10, 10, 10, 10, 10, 10, 10});
-    std::cout << std::endl << solution(5,5,{2,2,2,2,1,1,1,1,1});
+    vector<int> truck_weights = {7, 4, 5, 6};
+    cout << solution(bridge_length, weight, truck_weights) << endl;
+    cout << solution(100, 100, {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}) << endl;
+    cout << solution(5, 5, {2, 2, 2, 2, 1, 1, 1, 1, 1}) << endl;
 }
