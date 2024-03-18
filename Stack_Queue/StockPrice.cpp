@@ -2,31 +2,34 @@
 #include <vector>
 #include <stack>
 
-std::vector<int> solution(std::vector<int> prices)
+using namespace std;
+
+vector<int> solution(vector<int> prices)
 {
-    int size = prices.size();
-    std::vector<int> answer(prices.size());
-    std::stack<int> s;
-    for(int i=0; i<size; i++)
+    vector<int> Answer(prices.size(), 0);
+    stack<int> Stack;
+
+    for (int i = 0; i < prices.size(); ++i)
     {
-        while(!s.empty() && prices[s.top()] > prices[i])
+        while (!Stack.empty() && prices[Stack.top()] > prices[i])
         {
-            answer[s.top()] = i-s.top();
-            s.pop();
+            Answer[Stack.top()] = i - Stack.top();
+            Stack.pop();
         }
-        s.emplace(i);
+        Stack.emplace(i);
     }
-    while(!s.empty())
+    while (!Stack.empty())
     {
-        answer[s.top()] = size - s.top() - 1;
-        s.pop();
+        Answer[Stack.top()] = prices.size() - Stack.top() - 1;
+        Stack.pop();
     }
-    return answer;
+
+    return Answer;
 }
 
 int main()
 {
-    std::vector<int> prices = {3,5,4,2,6,7,1,2,4};
-    for(int data : solution(prices))
-        std::cout << data << " ";
+    vector<int> prices = {3, 5, 4, 2, 6, 7, 1, 2, 4};
+    for (int data : solution(prices))
+        cout << data << " ";
 }
