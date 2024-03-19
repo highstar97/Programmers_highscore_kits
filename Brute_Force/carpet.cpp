@@ -1,27 +1,38 @@
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 using namespace std;
 
-vector<int> solution(int brown, int yellow) {
-    vector<int> answer;
-    int n=1; int m=1;
-    for(;;m++){
-        n=m;
-        while(n*m < brown+yellow)
-            n++;
-        if(2*n+2*m-4 == brown){
-            answer.push_back(n);
-            answer.push_back(m);
-            break;
+vector<int> solution(int brown, int yellow)
+{
+    int Row, Col;
+    int Sum = brown + yellow;
+    // (Row + Col)*2 - 4  = brown
+    // Row * Col = brown + yellow
+    for (Col = 1; Col * Col <= Sum; ++Col)
+    {
+        for (Row = 1;; ++Row)
+        {
+            if (Row > Sum)
+            {
+                break;
+            }
+    
+            if (Row * Col == Sum && Row + Col == (brown + 4) / 2)
+            {
+                return {Row, Col};
+            }
         }
     }
-    return answer;
 }
 
-int main(){
-    int brown = 8; int yellow = 1;
-    for(int i : solution(brown,yellow))
+int main()
+{
+    int brown = 10;
+    int yellow = 2;
+    for (int i : solution(brown, yellow))
+    {
         cout << i << " ";
+    }
 }
